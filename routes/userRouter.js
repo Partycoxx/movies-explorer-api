@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const { getUsers, getUser, updateUserData } = require('../controllers/user');
+const { getUser, updateUserData } = require('../controllers/user');
 
-router.get('/', getUsers); // TODO не забыть удалить
 router.get('/me', getUser);
 router.patch(
   '/me',

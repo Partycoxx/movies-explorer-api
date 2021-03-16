@@ -37,13 +37,6 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUsers = (req, res, next) => {
-  // TODO не забыть выпилить
-  User.find({})
-    .then((users) => res.send(users))
-    .catch(next);
-};
-
 module.exports.updateUserData = (req, res, next) => {
   const { _id: id } = req.user;
   const { name, email } = req.body;

@@ -32,8 +32,10 @@
     "celebrate": "^13.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-winston": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.19",
-    "validator": "^13.5.2"
+    "validator": "^13.5.2",
+    "winston": "^3.3.3"
   }
 }

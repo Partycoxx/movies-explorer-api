@@ -7,11 +7,12 @@ const userRouter = require('./routes/userRouter.js');
 const movieRouter = require('./routes/movieRouter');
 const loginRouter = require('./routes/loginRouter.js');
 const signupRouter = require('./routes/signupRouter.js');
+const auth = require('./middlewares/auth');
+const { errorLogger, requestLogger } = require('./middlewares/logger');
 
 const WrongReqError = require('./errors/wrong-req-err');
 
 const { PORT = 3000 } = process.env;
-const auth = require('./middlewares/auth');
 
 const app = express();
 
@@ -25,6 +26,8 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
+app.use(requestLogger);
+
 app.use('/signin', loginRouter);
 app.use('/signup', signupRouter);
 
@@ -32,6 +35,8 @@ app.use(auth);
 
 app.use('/users', userRouter);
 app.use('/movies', movieRouter);
+
+app.use(errorLogger);
 
 app.use((err, req, res, next) => {
   if (isCelebrateError(err)) {
@@ -52,7 +57,7 @@ app.use((err, req, res, next) => {
   return next(err);
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const { statusCode = 500, message } = err;
 
   res.status(statusCode).send({
