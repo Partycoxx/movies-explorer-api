@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { isCelebrateError } = require('celebrate');
 const path = require('path');
+const cors = require('cors');
 const userRouter = require('./routes/userRouter.js');
 const movieRouter = require('./routes/movieRouter');
 const loginRouter = require('./routes/loginRouter.js');
@@ -22,6 +23,23 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
+
+const options = {
+  origin: [
+    'https://www.locomotive.students.nomoredomains.monster/',
+    'http://www.locomotive.students.nomoredomains.monster/',
+    'https://locomotive.students.nomoredomains.monster/',
+    'http://locomotive.students.nomoredomains.monster/',
+    'http://localhost:3000',
+    'https://localhost:3000',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
+  credentials: true,
+};
+app.use('*', cors(options));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
