@@ -7,8 +7,6 @@ const DuplicateEmailError = require('../errors/duplicate-email-err');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-// TODO централизованная обработка ошибок
-
 module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
