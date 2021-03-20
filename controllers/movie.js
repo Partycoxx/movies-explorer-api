@@ -2,6 +2,7 @@ const Movie = require('../models/movie');
 const NotFoundError = require('../errors/not-found-err');
 const WrongReqError = require('../errors/wrong-req-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const { errors } = require('../configs/constants');
 
 module.exports.getMovies = (req, res, next) => {
   const { _id: userId } = req.user;
@@ -19,7 +20,7 @@ module.exports.createMovie = (req, res, next) => {
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new WrongReqError('Введены некорректные данные');
+        throw new WrongReqError(errors.wrongReqError);
       }
     })
     .catch(next);
@@ -30,11 +31,11 @@ module.exports.deleteMovie = (req, res, next) => {
   const { _id: userId } = req.user;
   Movie.findById(movieId)
     .orFail(() => {
-      throw new NotFoundError('Такого фильма нет');
+      throw new NotFoundError(errors.filmNotFound);
     })
     .then((movie) => {
       if (String(movie.owner._id) !== String(userId)) {
-        throw new ForbiddenError('У вас нет прав для этого действия');
+        throw new ForbiddenError(errors.forbiddenError);
       } else {
         Movie.findByIdAndRemove(movieId)
           .populate(['owner'])

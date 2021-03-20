@@ -12,34 +12,21 @@ const auth = require('./middlewares/auth');
 const { errorLogger, requestLogger } = require('./middlewares/logger');
 
 const WrongReqError = require('./errors/wrong-req-err');
+const { developementDbUrl, errors } = require('./configs/constants');
+const corsOptions = require('./configs/corsOptions');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, NODE_ENV, DB_URL } = process.env;
 
 const app = express();
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(NODE_ENV === 'production' ? DB_URL : developementDbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
 
-const options = {
-  origin: [
-    'https://www.locomotive.students.nomoredomains.monster/',
-    'http://www.locomotive.students.nomoredomains.monster/',
-    'https://locomotive.students.nomoredomains.monster/',
-    'http://locomotive.students.nomoredomains.monster/',
-    'http://localhost:3000',
-    'https://localhost:3000',
-  ],
-  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204,
-  allowedHeaders: ['Content-Type', 'origin', 'Authorization'],
-  credentials: true,
-};
-app.use('*', cors(options));
+app.use('*', cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -79,7 +66,7 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
 
   res.status(statusCode).send({
-    message: statusCode === 500 ? 'На сервере произошла ошибка' : message,
+    message: statusCode === 500 ? errors.serverError : message,
   });
 });
 

@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { developementSecretKey, errors } = require('../configs/constants');
 const NotFoundError = require('../errors/not-found-err');
 const WrongReqError = require('../errors/wrong-req-err');
 const DuplicateEmailError = require('../errors/duplicate-email-err');
@@ -12,12 +13,12 @@ module.exports.createUser = (req, res, next) => {
 
   bcrypt.hash(password, 10).then((hash) => {
     User.create({ name, email, password: hash })
-      .then((user) => res.send(user))
+      .then(({ name, email }) => res.send({ name, email }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           throw new WrongReqError(err.message);
         } else if (err.code === 11000) {
-          throw new DuplicateEmailError('Пользователь с таким адресом электронной почты уже зарегистрирован');
+          throw new DuplicateEmailError(errors.duplicateEmailError);
         }
       })
       .catch(next);
@@ -28,7 +29,7 @@ module.exports.getUser = (req, res, next) => {
   const { _id: id } = req.user;
   User.findById(id)
     .orFail(() => {
-      throw new NotFoundError('Нет пользователя с таким id');
+      throw new NotFoundError(errors.userNotFound);
     })
     .exec()
     .then(({ name, email }) => res.send({ name, email }))
@@ -52,7 +53,7 @@ module.exports.updateUserData = (req, res, next) => {
         .then(({ name, email }) => res.send({ name, email }))
         .catch((err) => {
           if (err.name === 'ValidationError') {
-            throw new WrongReqError('Введены некорректные данные');
+            throw new WrongReqError(errors.wrongReqError);
           }
         })
         .catch(next);
@@ -65,7 +66,7 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', {
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : developementSecretKey, {
         expiresIn: '7d',
       });
       res.send({ token });

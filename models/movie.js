@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { errors } = require('../configs/constants');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -29,7 +30,7 @@ const movieSchema = new mongoose.Schema({
         const regex = /https?:\/\/[\w.\-[\]+().~:/?#@!$&'*,;=]+/g;
         return regex.test(v);
       },
-      message: 'Ссылка содержит ошибки, попробуйте снова',
+      message: errors.wrongLink,
     },
   },
   trailer: {
@@ -40,7 +41,7 @@ const movieSchema = new mongoose.Schema({
         const regex = /https?:\/\/[\w.\-[\]+().~:/?#@!$&'*,;=]+/g;
         return regex.test(v);
       },
-      message: 'Ссылка содержит ошибки, попробуйте снова',
+      message: errors.wrongLink,
     },
   },
   thumbnail: {
@@ -51,7 +52,7 @@ const movieSchema = new mongoose.Schema({
         const regex = /https?:\/\/[\w.\-[\]+().~:/?#@!$&'*,;=]+/g;
         return regex.test(v);
       },
-      message: 'Ссылка содержит ошибки, попробуйте снова',
+      message: errors.wrongLink,
     },
   },
   owner: {

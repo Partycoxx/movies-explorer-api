@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const WrongAuthError = require('../errors/wrong-auth-err');
 const DuplicateEmailError = require('../errors/duplicate-email-err');
+const { errors } = require('../configs/constants');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,7 +21,7 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return validator.isEmail(v);
       },
-      message: 'Адрес почтового ящика содержит ошибки, попробуйте снова',
+      message: errors.wrongEmail,
     },
   },
   password: {
@@ -36,12 +37,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new WrongAuthError('Неправильные почта или пароль'));
+        return Promise.reject(new WrongAuthError(errors.wrongCredentials));
       }
 
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          return Promise.reject(new WrongAuthError('Неправильные почта или пароль'));
+          return Promise.reject(new WrongAuthError(errors.wrongCredentials));
         }
 
         return user;
@@ -52,7 +53,7 @@ userSchema.statics.findUserByCredentials = function (email, password) {
 userSchema.statics.isEmailUnique = function (email, id) {
   return this.findOne({ email }).then((user) => {
     if (user && String(user._id) !== String(id)) {
-      return Promise.reject(new DuplicateEmailError('Пользователь с таким адресом электронной почты уже существует'));
+      return Promise.reject(new DuplicateEmailError(errors.duplicateEmailError));
     }
     return Promise.resolve();
   });

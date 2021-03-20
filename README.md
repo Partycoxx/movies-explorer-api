@@ -1,5 +1,7 @@
 # movies-explorer-api
 
-Бэкенд для дипломной работы в Яндекс.Практикуме. 
+Бэкенд для дипломной работы в Яндекс.Практикуме.
 
-Адрес для тестирования API: api.locomotive.students.nomoredomains.monster
+Адреса для тестирования API:
+https://api.locomotive.students.nomoredomains.monster,
+http://api.locomotive.students.nomoredomains.monster.
