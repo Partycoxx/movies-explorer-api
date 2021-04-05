@@ -1,9 +1,7 @@
 const corsOptions = {
   origin: [
-    'https://www.locomotive.students.nomoredomains.monster/',
-    'http://www.locomotive.students.nomoredomains.monster/',
-    'https://locomotive.students.nomoredomains.monster/',
-    'http://locomotive.students.nomoredomains.monster/',
+    'https://locomotive.nomoredomains.icu/',
+    'http://locomotive.nomoredomains.icu/',
     'http://localhost:3000',
     'https://localhost:3000',
   ],
