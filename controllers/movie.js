@@ -29,12 +29,12 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   const { _id: userId } = req.user;
-  Movie.find({ movieId })
+  Movie.findOne({ movieId })
     .orFail(() => {
       throw new NotFoundError(errors.filmNotFound);
     })
     .then((movie) => {
-      if (String(movie.owner._id) !== String(userId)) {
+      if (String(movie.owner) !== String(userId)) {
         throw new ForbiddenError(errors.forbiddenError);
       } else {
         Movie.findByIdAndRemove(movie._id)
