@@ -29,19 +29,15 @@ module.exports.createMovie = (req, res, next) => {
 module.exports.deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   const { _id: userId } = req.user;
-  Movie.findOne({ movieId })
+  Movie.findOne({ movieId, owner: userId })
     .orFail(() => {
       throw new NotFoundError(errors.filmNotFound);
     })
     .then((movie) => {
-      if (String(movie.owner) !== String(userId)) {
-        throw new ForbiddenError(errors.forbiddenError);
-      } else {
-        Movie.findByIdAndRemove(movie._id)
-          .populate(['owner'])
-          .then((deletedMovie) => res.send(deletedMovie))
-          .catch(next);
-      }
+      Movie.findByIdAndRemove(movie._id)
+        .populate(['owner'])
+        .then((deletedMovie) => res.send(deletedMovie))
+        .catch(next);
     })
     .catch(next);
 };
